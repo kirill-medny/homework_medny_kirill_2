@@ -16,8 +16,8 @@ from src.widget import get_new_data, mask_account_card
         ("Счет 73654108430135874305", "Счет **4305"),
     ],
 )
-def test_mask_account_card(number_str, result):
-
+def test_mask_account_card(number_str: str, result: str) -> None:
+    """Функция передает строку с номером карты или счета"""
     assert mask_account_card(number_str) == result
 
 
@@ -29,5 +29,6 @@ def test_mask_account_card(number_str, result):
         ("2018-06-30T02:08:58.4255722", "30.06.2018"),
     ],
 )
-def test_get_new_data(old_data, result):
+def test_get_new_data(old_data: str, result: str) -> None:
+    """Функция передает строку с датой"""
     assert get_new_data(old_data) == result

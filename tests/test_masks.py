@@ -13,7 +13,7 @@ from src.masks import get_mask_account, get_mask_card_number
         ("5999414228426353", "5999 41** **** 6353"),
     ],
 )
-def test_mask_card_number(card_number, mask_number):
+def test_mask_card_number(card_number: str, mask_number: str) -> None:
     """Функция передает строку с номером карты"""
     assert get_mask_card_number(card_number) == mask_number
 
@@ -27,6 +27,6 @@ def test_mask_card_number(card_number, mask_number):
         ("73654108430135874305", "**4305"),
     ],
 )
-def test_mask_account(acc_number, mask_bank_account):
+def test_mask_account(acc_number: str, mask_bank_account: str) -> None:
     """Функция передает строку с номером счета"""
     assert get_mask_account(acc_number) == mask_bank_account

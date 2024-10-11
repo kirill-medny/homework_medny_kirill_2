@@ -3,7 +3,7 @@ import pytest
 from src.processing import filter_by_state, sort_by_date
 
 
-def test_filter_by_state(list_dict):
+def test_filter_by_state(list_dict: list) -> None:
     """Функция которая передает список словарей"""
     assert filter_by_state(list_dict) == [
         {"date": "2019-07-03T18:35:29.512364", "id": 41428829, "state": "EXECUTED"},
@@ -11,8 +11,8 @@ def test_filter_by_state(list_dict):
     ]
 
 
-def test_filter_by_state_none():
-    """Функция которая передает пустой список словарей"""
+def test_filter_by_state_none() -> None:
+    """Функция которая передает пустой список"""
     assert filter_by_state([]) == []
 
 
@@ -115,6 +115,6 @@ def test_filter_by_state_none():
         ),
     ],
 )
-def test_sort_by_date(list_dict, direction, sorted_list_by_date):
+def test_sort_by_date(list_dict: list, direction: bool, sorted_list_by_date: list) -> None:
     """Функция передает словари с датой"""
     assert sort_by_date(list_dict, direction) == sorted_list_by_date
