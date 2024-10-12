@@ -1,34 +1,68 @@
 from typing import Iterable
 
+import pytest
+
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 
 
-def test_filter_by_currency(transactions: Iterable[dict]) -> None:
-    """
-    Функция которая передает данные для проверки filter_by_currency
-    """
-    filter_currency = filter_by_currency(transactions, "USD")
-    assert next(filter_currency) == {
-        "id": 939719570,
-        "state": "EXECUTED",
-        "date": "2018-06-30T02:08:58.425572",
-        "operationAmount": {"amount": "9824.07", "currency": {"name": "USD", "code": "USD"}},
-        "description": "Перевод организации",
-        "from": "Счет 75106830613657916952",
-        "to": "Счет 11776614605963066702",
-    }
+@pytest.mark.parametrize(
+    "transactions, currency_code, expected",
+    [
+        # Тест с пустым списком транзакций
+        ([], "USD", []),
+        # Тест с одной транзакцией, которая совпадает по валюте
+        (
+            [{"operationAmount": {"currency": {"code": "USD"}}}],
+            "USD",
+            [{"operationAmount": {"currency": {"code": "USD"}}}],
+        ),
+        # Тест с одной транзакцией, которая не совпадает по валюте
+        ([{"operationAmount": {"currency": {"code": "EUR"}}}], "USD", []),
+        # Тест с несколькими транзакциями, из которых одна совпадает по валюте
+        (
+            [
+                {"operationAmount": {"currency": {"code": "EUR"}}},
+                {"operationAmount": {"currency": {"code": "USD"}}},
+                {"operationAmount": {"currency": {"code": "GBP"}}},
+            ],
+            "USD",
+            [{"operationAmount": {"currency": {"code": "USD"}}}],
+        ),
+        # Тест с несколькими транзакциями, все из которых совпадают по валюте
+        (
+            [{"operationAmount": {"currency": {"code": "USD"}}}, {"operationAmount": {"currency": {"code": "USD"}}}],
+            "USD",
+            [{"operationAmount": {"currency": {"code": "USD"}}}, {"operationAmount": {"currency": {"code": "USD"}}}],
+        ),
+    ],
+)
+def test_filter_by_currency(transactions: Iterable[dict], currency_code: str, expected: Iterable[dict]) -> None:
+    assert list(filter_by_currency(transactions, currency_code)) == expected
 
 
-def test_transaction_descriptions(transactions: Iterable[dict]) -> None:
+@pytest.mark.parametrize(
+    "transactions, expected",
+    [
+        # Тест с пустым списком транзакций
+        ([], []),
+        # Тест с одной транзакцией
+        ([{"description": "Перевод организации"}], ["Перевод организации"]),
+        # Тест с несколькими транзакциями
+        (
+            [
+                {"description": "Перевод со счета на счет"},
+                {"description": "Перевод с карты на карту"},
+                {"description": "Перевод организации"},
+            ],
+            ["Перевод со счета на счет", "Перевод с карты на карту", "Перевод организации"],
+        ),
+    ],
+)
+def test_transaction_descriptions(transactions: Iterable[dict], expected: Iterable[dict]) -> None:
     """
     Функция которая передает данные для проверки transaction_descriptions
     """
-    transaction_descr = transaction_descriptions(transactions)
-    assert next(transaction_descr) == "Перевод организации"
-    assert next(transaction_descr) == "Перевод со счета на счет"
-    assert next(transaction_descr) == "Перевод со счета на счет"
-    assert next(transaction_descr) == "Перевод с карты на карту"
-    assert next(transaction_descr) == "Перевод организации"
+    assert list(transaction_descriptions(transactions)) == expected
 
 
 def test_card_number_generator() -> None:
