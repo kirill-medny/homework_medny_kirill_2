@@ -1,7 +1,6 @@
-from turtledemo.penrose import start
-
 from src.decorators import log
-from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
+from src.generators import (card_number_generator, filter_by_currency,
+                            transaction_descriptions)
 from src.processing import filter_by_state, sort_by_date
 from src.widget import get_new_data, mask_account_card
 
@@ -96,7 +95,7 @@ for car_number in card_number_generator(start=2, stop=12):
 
 
 @log(filename="mylog.txt")
-def my_function(x, y):
+def my_function(x: int, y: int) -> int:
     """Функция вызова декоратора с файлом сохранения mylog.txt"""
     return x + y
 
@@ -105,7 +104,7 @@ my_function(1, 2)
 
 
 @log()
-def my_function(x, y):
+def my_function_1(x: int, y: int) -> int:
     """Функция вызова декоратора без файла сохранения и вывод в консоль"""
     return x + y
 
@@ -114,7 +113,7 @@ my_function(1, 2)
 
 
 @log(filename="mylog.txt")
-def my_function_error(x, y):
+def my_function_error(x: int, y: int) -> float:
     """Функция вызова декоратора с ошибкой с файлом сохранения mylog.txt"""
     return x / y
 
