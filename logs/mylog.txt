@@ -1,0 +1,10 @@
+my_function ok. Result: 3
+my_function_error ZeroDivisionError: division by zero. Inputs: (3, 0), {}
+my_function ok. Result: 3
+my_function_error ZeroDivisionError: division by zero. Inputs: (3, 0), {}
+my_function ok. Result: 3
+my_function_error ZeroDivisionError: division by zero. Inputs: (3, 0), {}
+my_function ok. Result: 3
+my_function ok. Result: 3
+my_function_error ZeroDivisionError: division by zero. Inputs: (3, 0), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
