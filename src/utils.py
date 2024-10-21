@@ -1,5 +1,6 @@
 import json
 import os.path
+import os
 from typing import List, Dict, Union
 
 
@@ -17,5 +18,8 @@ def load_transactions(file_path: str) -> Union[dict, list]:
         except json.JSONDecodeError:
             return []
 
-transactions = load_transactions('.data/operations.json')
+
+
+with open(os.path.abspath("operations.json"), "r") as file:
+   transactions = load_transactions(file)
 print(transactions)
