@@ -1,7 +1,10 @@
+import os.path
+
 from src.decorators import log
-from src.generators import (card_number_generator, filter_by_currency,
-                            transaction_descriptions)
+from src.external_api import currency_conversion
+from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
 from src.processing import filter_by_state, sort_by_date
+from src.utils import load_transactions
 from src.widget import get_new_data, mask_account_card
 
 print(get_new_data("2024-03-11T02:26:18.671407"))
@@ -112,10 +115,19 @@ def my_function_1(x: int, y: int) -> int:
 my_function(1, 2)
 
 
-@log(filename="mylog.txt")
-def my_function_error(x: int, y: int) -> float:
-    """Функция вызова декоратора с ошибкой с файлом сохранения mylog.txt"""
-    return x / y
+# @log(filename="mylog.txt")
+# def my_function_error(x: int, y: int) -> float:
+#    """Функция вызова декоратора с ошибкой с файлом сохранения mylog.txt"""
+#    return x / y
 
 
-my_function_error(3, 0)
+# my_function_error(3, 0)
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(current_dir, "data", "operations.json")
+transactions_1 = load_transactions(file_path)
+
+
+for transaction in transactions_1:
+    rub_amount = currency_conversion(transaction)
+    print(f"Transaction amount in RUB: {rub_amount}")
