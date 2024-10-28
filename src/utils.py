@@ -1,7 +1,7 @@
 import json
 import os
-from src.setup_logger import setup_logger
 
+from src.setup_logger import setup_logger
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 file_path_1 = os.path.join(current_dir, "../logs", "utils.log")
@@ -20,5 +20,5 @@ def load_transactions(file_path: str) -> list[dict]:
         else:
             return []
     except Exception:
-        logger.error(f"Ошибка")
+        logger.error("Ошибка")
         return []
