@@ -3,7 +3,7 @@ import os
 from logging import Logger
 
 
-def setup_logger(file_name, log_file) -> Logger:
+def setup_logger(file_name: str, log_file: str) -> Logger:
     """Функция настройки логов для модулей"""
 
     os.makedirs("logs", exist_ok=True)

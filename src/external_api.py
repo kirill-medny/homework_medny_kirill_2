@@ -13,9 +13,11 @@ def currency_conversion(transaction: dict) -> float:
     """Конвертируем валюту через API и возвращаем его"""
     amount = transaction.get("operationAmount", {}).get("amount")
     currency = transaction.get("operationAmount", {}).get("currency", {}).get("code")
+    if amount is None:
+        return 0.0  # Возвращаем 0.0, если amount не найден
 
     if currency == "RUB":
-        return amount
+        return float(amount)
     elif currency in ["USD", "EUR"]:
         try:
             response = requests.get(
@@ -23,7 +25,7 @@ def currency_conversion(transaction: dict) -> float:
             )
             if response.status_code == 200:
                 data = response.json()
-                return data["result"]
+                return float(data["result"])
             else:
                 print(f"Ошибка при конвертации валюты: {response.status_code}")
                 return 0.0
