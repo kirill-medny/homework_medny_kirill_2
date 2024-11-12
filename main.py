@@ -1,5 +1,6 @@
 import os.path
 
+from src.csv_pandas import read_csv, read_excel
 from src.decorators import log
 from src.external_api import currency_conversion
 from src.generators import card_number_generator, filter_by_currency, transaction_descriptions
@@ -131,3 +132,14 @@ transactions_1 = load_transactions(file_path)
 for transaction in transactions_1:
     rub_amount = currency_conversion(transaction)
     print(f"Transaction amount in RUB: {rub_amount}")
+
+
+if __name__ == "__main__":
+    file_path_1 = os.path.join("logs", "transactions.csv")
+    operations = read_csv(file_path_1)
+    for operation in operations:
+        print(operation)
+
+if __name__ == "__main__":
+    file_path_2 = os.path.join("logs", "transactions_excel.xlsx")
+    print(read_excel(file_path_2))
