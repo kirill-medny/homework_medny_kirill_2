@@ -1,0 +1,7 @@
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}
+example_function TypeError: Что-то пошло не так. Inputs: (5, 100), {}

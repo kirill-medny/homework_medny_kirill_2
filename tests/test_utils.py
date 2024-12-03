@@ -1,41 +1,41 @@
-import json
 import unittest
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import patch
 
-from src.utils import load_transactions
+from src.utils import read_file
 
 
-class TestGetTransactions(unittest.TestCase):
+class TestReadFile(unittest.TestCase):
 
-    @patch("builtins.open", new_callable=mock_open, read_data='[{"transaction": "data1"}, {"transaction": "data2"}]')
-    def test_load_transactions_valid_file(self, mock_file: MagicMock) -> None:
-        expected_data = [{"transaction": "data1"}, {"transaction": "data2"}]
-        result = load_transactions("fake_path.json")
-        self.assertEqual(result, expected_data)
-        mock_file.assert_called_once_with("fake_path.json", "r", encoding="Windows-1251")
+    @patch("src.utils._read_json")
+    def test_read_json_file(self, mock_read_json) -> None:
+        # Настройка mock-ответа
+        mock_read_json.return_value = [{"key": "value"}]
+        result = read_file("test.json")
+        mock_read_json.assert_called_once_with("test.json")
+        self.assertEqual(result, [{"key": "value"}])
 
-    @patch("builtins.open", new_callable=mock_open, read_data="{}")
-    def test_load_transactions_invalid_content(self, mock_file: MagicMock) -> None:
-        result = load_transactions("fake_path.json")
+    @patch("src.utils._read_csv")
+    def test_read_csv_file(self, mock_read_csv) -> None:
+        # Настройка mock-ответа
+        mock_read_csv.return_value = [{"column1": "data1", "column2": "data2"}]
+        result = read_file("test.csv")
+        mock_read_csv.assert_called_once_with("test.csv")
+        self.assertEqual(result, [{"column1": "data1", "column2": "data2"}])
+
+    @patch("src.utils._read_xlsx")
+    def test_read_xlsx_file(self, mock_read_xlsx) -> None:
+        # Настройка mock-ответа
+        mock_read_xlsx.return_value = [{"column1": "data1", "column2": "data2"}]
+        result = read_file("test.xlsx")
+        mock_read_xlsx.assert_called_once_with("test.xlsx")
+        self.assertEqual(result, [{"column1": "data1", "column2": "data2"}])
+
+    def test_read_file_with_invalid_extension(self) -> None:
+        # Проверяем, что функция возвращает пустой список для неподдерживаемого формата
+        result = read_file("test.txt")
         self.assertEqual(result, [])
-        mock_file.assert_called_once_with("fake_path.json", "r", encoding="Windows-1251")
 
-    @patch("builtins.open", new_callable=mock_open, read_data="")
-    def test_load_transactions_empty_file(self, mock_file: MagicMock) -> None:
-        result = load_transactions("fake_path.json")
+    def test_read_file_with_no_extension(self) -> None:
+        # Проверяем, что функция возвращает пустой список для файла без расширения
+        result = read_file("test")
         self.assertEqual(result, [])
-        mock_file.assert_called_once_with("fake_path.json", "r", encoding="Windows-1251")
-
-    @patch("builtins.open", side_effect=FileNotFoundError)
-    def test_load_transactions_file_not_found(self, mock_file: MagicMock) -> None:
-        result = load_transactions("fake_path.json")
-        self.assertEqual(result, [])
-        mock_file.assert_called_once_with("fake_path.json", "r", encoding="Windows-1251")
-
-    @patch("builtins.open", new_callable=mock_open, read_data='{"transaction": "data"}')
-    @patch("json.load", side_effect=json.JSONDecodeError("Expecting value", "", 0))
-    def test_load_transactions_json_decode_error(self, mock_json_load: MagicMock, mock_file: MagicMock) -> None:
-        result = load_transactions("fake_path.json")
-        self.assertEqual(result, [])
-        mock_file.assert_called_once_with("fake_path.json", "r", encoding="Windows-1251")
-        mock_json_load.assert_called_once()
