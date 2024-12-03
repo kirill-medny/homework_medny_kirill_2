@@ -1,6 +1,6 @@
 import pytest
 
-from src.processing import filter_by_state, sort_by_date, group_transactions_by_category, find_transactions
+from src.processing import filter_by_state, find_transactions, group_transactions_by_category, sort_by_date
 
 
 @pytest.mark.parametrize(
@@ -80,12 +80,7 @@ def test_filter_by_state_raise_exception1() -> None:
         ),
     ],
 )
-# def test_sort_by_date(x: list[dict], y: int | bool, expected: str) -> None:
-#     """Тестируем функцию sort_by_date - стандартные входные данные."""
-#     assert sort_by_date(x, y) == expected
-
-
-def test_sort_by_date_raise_exception1(x: list[dict],y: str, expected: str) -> None:
+def test_sort_by_date_raise_exception1(x: list[dict], y: str, expected: str) -> None:
     """Тестируем функцию sort_by_date - список операций пустой."""
     with pytest.raises(ValueError, match="Список операций не должен быть пустым!"):
         sort_by_date([], 1)

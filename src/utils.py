@@ -1,9 +1,8 @@
-import json
 import csv
-import pandas as pd
-import logging
+import json
 import os
 
+import pandas as pd
 
 from src.setup_logger import setup_logger
 

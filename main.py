@@ -1,13 +1,6 @@
-from src.widget import get_new_data, mask_account_card
-
+from src.processing import filter_by_rub_cvs_xlsx, filter_by_rub_json, filter_by_state, find_transactions, sort_by_date
 from src.utils import read_file
-from src.processing import (
-    filter_by_state,
-    sort_by_date,
-    filter_by_rub_json,
-    filter_by_rub_cvs_xlsx,
-    find_transactions,
-)
+from src.widget import get_new_data, mask_account_card
 
 
 def main() -> None:
@@ -32,9 +25,11 @@ def main() -> None:
             transactions_data = read_file("data/transactions_excel.xlsx")
 
     while True:
-        status = input("Введите статус, по которому необходимо выполнить фильтрацию. "
-                       "Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING\nПользователь: ")
-        if status.upper() in ['EXECUTED', 'CANCELED', 'PENDING']:
+        status = input(
+            "Введите статус, по которому необходимо выполнить фильтрацию. "
+            "Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING\nПользователь: "
+        )
+        if status.upper() in ["EXECUTED", "CANCELED", "PENDING"]:
             print(f'Операции отфильтрованы по статусу "{status.upper()}"')
             filtered_transactions = filter_by_state(transactions_data, status)
             break
@@ -71,8 +66,10 @@ def main() -> None:
         do_filter_by_description = 1
 
     if do_filter_by_description:
-        user_input = input("Какие именно операции отразить в списке транзакций?"
-                           "(доступно: Перевод с карты на карту, Перевод организации, Открытие вклада\n>>>$:  ")
+        user_input = input(
+            "Какие именно операции отразить в списке транзакций?"
+            "(доступно: Перевод с карты на карту, Перевод организации, Открытие вклада\n>>>$:  "
+        )
         transactions_data = find_transactions(transactions_data, user_input)
 
     if not transactions_data:
@@ -81,7 +78,6 @@ def main() -> None:
     print("Распечатываю итоговый список транзакций...")
     print(f"Всего банковских операций в выборке: {len(filtered_transactions)}")
 
-
     for transaction in transactions_data:
         print(f"{get_new_data(transaction["date"])} {transaction["description"]}")
         print(f"Счет {mask_account_card(transaction["to"])}")
@@ -89,7 +85,6 @@ def main() -> None:
             print(f"{transaction["operationAmount"]["amount"]} {transaction["operationAmount"]["currency"]["name"]}\n")
         else:
             print(f"Сумма: {transaction['amount']} {transaction['currency_name']}\n")
-
 
 
 if __name__ == "__main__":

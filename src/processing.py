@@ -1,8 +1,7 @@
-import re
-from src.utils import read_file
-from collections import Counter
-import os
 import logging
+import os
+import re
+from collections import Counter
 from datetime import datetime
 
 # Запуск pytest происходит из корневой директории проекта, а запуск скрипта из директории src.
@@ -17,7 +16,6 @@ file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(me
 
 file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
-
 
 
 def filter_by_state(transactions_list: list, state: str = "EXECUTED") -> list:
@@ -37,6 +35,7 @@ def filter_by_state(transactions_list: list, state: str = "EXECUTED") -> list:
     logger.info(f"Список операций успешно отфильтрован по статусу {state}.")
     return result
 
+
 def filter_by_rub_json(transactions_list: list) -> list:
     """Функция возвращает список словарей, содержащий только те словари, у которых ключ 'code' равен RUB."""
     if not transactions_list:
@@ -45,13 +44,14 @@ def filter_by_rub_json(transactions_list: list) -> list:
 
     result = []
     for transaction in transactions_list:
-       if transaction == {}:
-         continue
-       if transaction["operationAmount"]["currency"]["code"] == "RUB":
-         result.append(transaction)
+        if transaction == {}:
+            continue
+        if transaction["operationAmount"]["currency"]["code"] == "RUB":
+            result.append(transaction)
 
     logger.info("Список операций успешно отфильтрован по ключу code=RUB.")
     return result
+
 
 def filter_by_rub_cvs_xlsx(transactions_list: list) -> list:
     """Функция возвращает список словарей, содержащий только те словари, у которых ключ 'code' равен RUB."""
@@ -61,36 +61,14 @@ def filter_by_rub_cvs_xlsx(transactions_list: list) -> list:
 
     result = []
     for transaction in transactions_list:
-       if transaction == {}:
-         continue
-       if transaction["currency_code"] == "RUB":
-         result.append(transaction)
+        if transaction == {}:
+            continue
+        if transaction["currency_code"] == "RUB":
+            result.append(transaction)
 
     logger.info("Список операций успешно отфильтрован по ключу code=RUB.")
     return result
 
-
-# def sort_by_date(transactions_list: list, sorting_order: int | bool = 1) -> list:
-#     """Функция возвращает новый список, отсортированный по дате."""
-#     if not transactions_list:
-#         logger.error(f"Передан пустой список операций {transactions_list}.")
-#         raise ValueError("Список операций не должен быть пустым!")
-#
-#     logger.info(
-#         f"Список операций успешно отфильтрован по дате {'по убыванию' if sorting_order else 'по возрастанию'}."
-#     )
-#     return sorted(
-#         transactions_list,
-#         key=lambda x: str(x["date"][:10]) if x != {} else "",
-#         reverse=False if sorting_order == 0 else True,
-#     )
-
-
-from datetime import datetime
-import logging
-
-# Настройка логирования
-logger = logging.getLogger(__name__)
 
 def sort_by_date(transactions_list: list, sorting_order: int | bool = 1) -> list:
     """Функция возвращает новый список, отсортированный по дате."""
@@ -113,7 +91,7 @@ def sort_by_date(transactions_list: list, sorting_order: int | bool = 1) -> list
         sorted_transactions = sorted(
             transactions_list,
             key=get_date_key,
-            reverse=sorting_order == 0  # Если sorting_order 0, сортируем по возрастанию
+            reverse=sorting_order == 0,  # Если sorting_order 0, сортируем по возрастанию
         )
     except Exception as e:
         logger.error(f"Ошибка при сортировке транзакций: {e}")
@@ -123,7 +101,6 @@ def sort_by_date(transactions_list: list, sorting_order: int | bool = 1) -> list
         f"Список операций успешно отсортирован по дате {'по убыванию' if sorting_order == 0 else 'по возрастанию'}."
     )
     return sorted_transactions
-
 
 
 def find_transactions(transactions_list: list, key_string: str) -> list:
