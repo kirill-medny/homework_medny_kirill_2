@@ -1,5 +1,6 @@
 import unittest
-from unittest.mock import mock_open, patch
+from typing import Any, Dict, List
+from unittest.mock import MagicMock, mock_open, patch
 
 import pandas as pd
 
@@ -14,9 +15,9 @@ from src.banking_transactions import (
 
 class TestTransactionFunctions(unittest.TestCase):
 
-    def setUp(self):
+    def setUp(self) -> None:
         # Пример данных для тестирования
-        self.transactions = [
+        self.transactions: List[Dict[str, Any]] = [
             {
                 "date": "2023-01-01",
                 "description": "Транзакция 1",
@@ -57,7 +58,7 @@ class TestTransactionFunctions(unittest.TestCase):
         read_data='[{"date": "2023-01-01", "description": "Транзакция 1", "status": "EXECUTED", '
         '"account": "1234567890123456", "amount": 1000, "currency": "RUB"}]',
     )
-    def test_load_transactions_from_json(self, mock_file):
+    def test_load_transactions_from_json(self, mock_file: MagicMock) -> None:
         transactions = load_transactions_from_json("dummy_path.json")
         self.assertEqual(len(transactions), 1)
         self.assertEqual(transactions[0]["description"], "Транзакция 1")
@@ -68,28 +69,28 @@ class TestTransactionFunctions(unittest.TestCase):
         read_data="date,description,status,account,amount,currency\n2023-01-01,"
         "Транзакция 1,EXECUTED,1234567890123456,1000,RUB\n",
     )
-    def test_load_transactions_from_csv(self, mock_file):
+    def test_load_transactions_from_csv(self, mock_file: MagicMock) -> None:
         transactions = load_transactions_from_csv("dummy_path.csv")
         self.assertEqual(len(transactions), 1)
         self.assertEqual(transactions[0]["description"], "Транзакция 1")
 
     @patch("pandas.read_excel")
-    def test_load_transactions_from_xlsx(self, mock_read_excel):
+    def test_load_transactions_from_xlsx(self, mock_read_excel: MagicMock) -> None:
         mock_read_excel.return_value = pd.DataFrame(self.transactions)
         transactions = load_transactions_from_xlsx("dummy_path.xlsx")
         self.assertEqual(len(transactions), 4)
         self.assertEqual(transactions[0]["description"], "Транзакция 1")
 
-    def test_filter_transactions(self):
+    def test_filter_transactions(self, mock_file: MagicMock) -> None:
         filtered = filter_transactions(self.transactions, "EXECUTED")
         self.assertEqual(len(filtered), 2)
         self.assertEqual(filtered[0]["description"], "Транзакция 1")
 
-    def test_sort_transactions_ascending(self):
+    def test_sort_transactions_ascending(self, mock_file: MagicMock) -> None:
         sorted_transactions = sort_transactions(self.transactions, ascending=True)
         self.assertEqual(sorted_transactions[0]["date"], "2023-01-01")
 
-    def test_sort_transactions_descending(self):
+    def test_sort_transactions_descending(self, mock_file: MagicMock) -> None:
         sorted_transactions = sort_transactions(self.transactions, ascending=False)
         self.assertEqual(sorted_transactions[0]["date"], "2023-01-04")
 

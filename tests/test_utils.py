@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from src.utils import read_file
 
@@ -7,7 +7,7 @@ from src.utils import read_file
 class TestReadFile(unittest.TestCase):
 
     @patch("src.utils._read_json")
-    def test_read_json_file(self, mock_read_json) -> None:
+    def test_read_json_file(self, mock_read_json: MagicMock) -> None:
         # Настройка mock-ответа
         mock_read_json.return_value = [{"key": "value"}]
         result = read_file("test.json")
@@ -15,7 +15,7 @@ class TestReadFile(unittest.TestCase):
         self.assertEqual(result, [{"key": "value"}])
 
     @patch("src.utils._read_csv")
-    def test_read_csv_file(self, mock_read_csv) -> None:
+    def test_read_csv_file(self, mock_read_csv: MagicMock) -> None:
         # Настройка mock-ответа
         mock_read_csv.return_value = [{"column1": "data1", "column2": "data2"}]
         result = read_file("test.csv")
@@ -23,7 +23,7 @@ class TestReadFile(unittest.TestCase):
         self.assertEqual(result, [{"column1": "data1", "column2": "data2"}])
 
     @patch("src.utils._read_xlsx")
-    def test_read_xlsx_file(self, mock_read_xlsx) -> None:
+    def test_read_xlsx_file(self, mock_read_xlsx: MagicMock) -> None:
         # Настройка mock-ответа
         mock_read_xlsx.return_value = [{"column1": "data1", "column2": "data2"}]
         result = read_file("test.xlsx")
