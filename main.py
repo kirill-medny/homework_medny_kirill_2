@@ -79,12 +79,38 @@ def main() -> None:
     print(f"Всего банковских операций в выборке: {len(filtered_transactions)}")
 
     for transaction in transactions_data:
-        print(f"{get_new_data(transaction["date"])} {transaction["description"]}")
-        print(f"Счет {mask_account_card(transaction["to"])}")
-        if choice == "1":
-            print(f"{transaction["operationAmount"]["amount"]} {transaction["operationAmount"]["currency"]["name"]}\n")
+        if isinstance(transaction, dict):  # Проверка, является ли элемент словарем
+            date = transaction.get("date")
+            description = transaction.get("description")
+            to_account = transaction.get("to")
+            operation_amount = transaction.get("operationAmount")
+            amount = transaction.get("amount")
+            currency_name = transaction.get("currency_name")
+
+            if date and description and to_account:  # Проверка на наличие необходимых ключей
+                print(f"{get_new_data(date)} {description}")
+                print(f"Счет {mask_account_card(to_account)}")
+                if choice == "1":
+                    if (
+                        operation_amount
+                        and isinstance(operation_amount, dict)
+                        and "amount" in operation_amount
+                        and "currency" in operation_amount
+                        and isinstance(operation_amount["currency"], dict)
+                        and "name" in operation_amount["currency"]
+                    ):  # Многоуровневая проверка
+                        print(f"{operation_amount['amount']} {operation_amount['currency']['name']}\n")
+                    else:
+                        print("Ошибка: Отсутствуют данные о сумме операции.")
+                else:
+                    if amount and currency_name:
+                        print(f"Сумма: {amount} {currency_name}\n")
+                    else:
+                        print("Ошибка: Отсутствуют данные о сумме.")
+            else:
+                print("Ошибка: В транзакции отсутствуют необходимые данные (date, description, to).")
         else:
-            print(f"Сумма: {transaction['amount']} {transaction['currency_name']}\n")
+            print("Ошибка: Элемент transactions_data не является словарем.")
 
 
 if __name__ == "__main__":

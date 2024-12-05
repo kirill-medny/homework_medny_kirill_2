@@ -3,6 +3,7 @@ import os
 import re
 from collections import Counter
 from datetime import datetime
+from typing import Any
 
 # Запуск pytest происходит из корневой директории проекта, а запуск скрипта из директории src.
 # Эта конструкция нужна для выравнивания путей.
@@ -77,7 +78,7 @@ def sort_by_date(transactions_list: list, sorting_order: int | bool = 1) -> list
         raise ValueError("Список операций не должен быть пустым!")
 
     # Преобразуем строки дат в объекты datetime для корректной сортировки
-    def get_date_key(transaction):
+    def get_date_key(transaction: dict[str, Any]) -> datetime:
         date_str = transaction.get("date")  # Получаем значение даты
         if isinstance(date_str, str) and len(date_str) >= 10:  # Проверяем, что это строка и она достаточно длинная
             try:

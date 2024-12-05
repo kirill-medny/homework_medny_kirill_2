@@ -2,11 +2,12 @@
 import csv
 import json
 import re
+from typing import Any, Dict, Hashable, List
 
 import pandas as pd
 
 
-def search_transactions(transactions, search_string):
+def search_transactions(transactions: List[Dict[str, Any]], search_string: str) -> List[Dict[str, Any]]:
     """
     Функция для поиска банковских операций по описанию.
 
@@ -37,7 +38,7 @@ filtered_transactions = search_transactions(transactions, search_string)
 print(filtered_transactions)
 
 
-def count_transactions_by_category(transactions, categories):
+def count_transactions_by_category(transactions: List[Dict[str, Any]], categories: List[str]) -> Dict[str, int]:
     """
     Функция для подсчета количества банковских операций по категориям.
 
@@ -73,23 +74,80 @@ category_counts = count_transactions_by_category(transactions, categories)
 print(category_counts)
 
 
-def load_transactions_from_json(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        return json.load(file)
+# def load_transactions_from_json(file_path: pathlib.Path) -> List[Dict[str, Any]]:
+#     with open(file_path, "r", encoding="utf-8") as file:
+#         return json.load(file)
+def load_transactions_from_json(file_path: str) -> List[Dict[str, Any]]:
+    """
+    Загружает транзакции из JSON-файла.
+    Args:
+        file_path: Путь к JSON-файлу.
+    Returns:
+        Список словарей, где каждый словарь представляет транзакцию. Возвращает пустой список при ошибке.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            # Проверка на корректность данных: предполагаем, что данные - это список словарей
+            if isinstance(data, list) and all(isinstance(item, dict) for item in data):
+                return data
+            else:
+                print("Ошибка: JSON-файл не содержит список словарей.")
+                return []
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Ошибка при загрузке файла: {e}")
+        return []
 
 
-def load_transactions_from_csv(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        return list(csv.DictReader(file))
+# def load_transactions_from_csv(file_path: pathlib.Path) -> List[Dict[str, Any]]:
+#     with open(file_path, "r", encoding="utf-8") as file:
+#         return list(csv.DictReader(file))
 
 
-def load_transactions_from_xlsx(file_path):
-    return pd.read_excel(file_path).to_dict(orient="records")
+def load_transactions_from_csv(file_path: str) -> List[Dict[str, Any]]:
+    """
+    Загружает транзакции из CSV-файла.
+
+    Args:
+        file_path: Путь к CSV-файлу.
+
+    Returns:
+        Список словарей, где каждый словарь представляет транзакцию. Возвращает пустой список при ошибке.
+    """
+    try:
+        with open(file_path, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            return list(reader)
+    except FileNotFoundError:
+        print(f"Ошибка: Файл {file_path} не найден.")
+        return []
+    except csv.Error as e:
+        print(f"Ошибка при чтении CSV-файла: {e}")
+        return []
 
 
-def filter_transactions(transactions, status):
+# def load_transactions_from_xlsx(file_path: pathlib.Path) -> List[Dict[str, Any]]:
+#     return pd.read_excel(file_path).to_dict(orient="records")
+def load_transactions_from_xlsx(file_path: str) -> List[Dict[Hashable, Any]]:
+    """
+    Загружает транзакции из файла XLSX и возвращает их в виде списка словарей.
+
+    Args:
+        file_path: Путь к файлу XLSX.
+
+    Returns:
+     Список словарей, где каждый словарь представляет одну транзакцию. Возвращает пустой список, если произошла ошибка.
+    """
+    try:
+        return pd.read_excel(file_path).to_dict(orient="records")
+    except (FileNotFoundError, pd.errors.EmptyDataError, pd.errors.ParserError) as e:
+        print(f"Ошибка при загрузке файла: {e}")  # Более информативное сообщение об ошибке
+        return []
+
+
+def filter_transactions(transactions: list[dict[str, Any]], status: str) -> List[Dict[str, Any]]:
     return [t for t in transactions if t["status"].lower() == status.lower()]
 
 
-def sort_transactions(transactions, ascending):
+def sort_transactions(transactions: list[dict[str, Any]], ascending: bool) -> List[Dict[str, Any]]:
     return sorted(transactions, key=lambda x: x["date"], reverse=not ascending)
