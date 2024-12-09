@@ -82,14 +82,15 @@ def main() -> None:
         if isinstance(transaction, dict):  # Проверка, является ли элемент словарем
             date = transaction.get("date")
             description = transaction.get("description")
+            from_account = transaction.get("from")
             to_account = transaction.get("to")
             operation_amount = transaction.get("operationAmount")
             amount = transaction.get("amount")
             currency_name = transaction.get("currency_name")
 
-            if date and description and to_account:  # Проверка на наличие необходимых ключей
+            if date and description and to_account and from_account:  # Проверка на наличие необходимых ключей
                 print(f"{get_new_data(date)} {description}")
-                print(f"Счет {mask_account_card(to_account)}")
+                print(f"{mask_account_card(from_account)} -> {mask_account_card(to_account)}")
                 if choice == "1":
                     if (
                         operation_amount
